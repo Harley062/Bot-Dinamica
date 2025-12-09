@@ -53,12 +53,11 @@ def click_on_image(image_name, confidence=0.8, timeout=10, click_type='single', 
         except pyautogui.ImageNotFoundException:
             pass
         except Exception as e:
-            print(f"⚠ Erro ao procurar imagem '{image_name}': {type(e).__name__}: {e}")
+            raise Exception(f"⚠ Erro ao procurar imagem '{image_name}': {type(e).__name__}: {e}")
         
         time.sleep(0.3)
     
-    print(f"✗ Imagem '{image_name}' não encontrada após {timeout}s ({attempts} tentativas)")
-    return False
+    raise Exception(f"✗ Imagem '{image_name}' não encontrada após {timeout}s ({attempts} tentativas)")
 
 
 def wait_and_click_image(image_name, confidence=0.8, timeout=30):
