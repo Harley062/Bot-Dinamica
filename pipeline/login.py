@@ -20,7 +20,7 @@ def login(usuario, senha, usuario_mega="mega", senha_mega="a"):
     click_on_image('login/abrir_mega.png', confidence=0.7, timeout=30, click_type='double')
     time.sleep(10)
     click_on_image('login/logo.png', confidence=0.7, timeout=30)
-    
+    time.sleep(2)
     pyautogui.press('tab')
     
     pyautogui.write(usuario_mega)
