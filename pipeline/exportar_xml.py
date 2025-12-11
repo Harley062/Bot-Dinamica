@@ -3,7 +3,7 @@ import time
 import pyautogui
 
 
-def exportar_nota():
+def exportar_xml():
     click_on_image('exportar_xml/EpuPRI53T2.png', confidence=0.7, timeout=20)
     
     time.sleep(5)

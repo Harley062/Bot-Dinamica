@@ -1,7 +1,7 @@
 from .login import login
-from .exportar_nota import exportar_nota
+from .exportar_xml import exportar_xml
 
 __all__ = [
     "login",
-    "exportar_nota",
+    "exportar_xml",
 ]
