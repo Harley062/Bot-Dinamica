@@ -19,3 +19,6 @@ logs/*.log
 Thumbs.db
 
 screenshots/
+
+*.csv
+
