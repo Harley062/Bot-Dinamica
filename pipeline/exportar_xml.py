@@ -258,17 +258,17 @@ def exportar_xml():
     #         resultado_ia = analisar_e_obter_id_produto(descricao_item, auto_cadastrar=True)
             
     #         if resultado_ia['erro']:
-    #             print(f'  ❌ Erro na análise: {resultado_ia["erro"]}')
+    #             print(f'Erro na análise: {resultado_ia["erro"]}')
     #             continue
             
     #         if resultado_ia['produto_codigo']:
     #             if resultado_ia['produto_novo']:
-    #                 print(f'  ✅ Produto CADASTRADO com código: {resultado_ia["produto_codigo"]}')
+    #                 print(f'Produto CADASTRADO com código: {resultado_ia["produto_codigo"]}')
     #             else:
-    #                 print(f'  ✅ Produto ENCONTRADO com código: {resultado_ia["produto_codigo"]}')
-    #             print(f'     Descrição: {resultado_ia["descricao_match"]}')
-    #             print(f'     Confiança: {resultado_ia["confianca"]} ({resultado_ia["similaridade"]}%)')
-    #             print(f'     Justificativa: {resultado_ia["justificativa"]}')
+    #                 print(f'Produto ENCONTRADO com código: {resultado_ia["produto_codigo"]}')
+    #             print(f'Descrição: {resultado_ia["descricao_match"]}')
+    #             print(f'Confiança: {resultado_ia["confianca"]} ({resultado_ia["similaridade"]}%)')
+    #             print(f'Justificativa: {resultado_ia["justificativa"]}')
                 
                 
     #             if resultado_ia.get('dados_cadastro'):
@@ -282,12 +282,12 @@ def exportar_xml():
                 
     #             codigo_produto = resultado_ia['produto_codigo']
                 
-    #             print(f'  ⏳ Vinculando produto no sistema...')
+    #             print(f'Vinculando produto no sistema...')
                 
     #             pyautogui.write(str(codigo_produto))
     #         else:
-    #             print(f'  ⚠️ Não foi possível identificar/cadastrar o produto')
-    #             print(f'     Justificativa: {resultado_ia["justificativa"]}')
+    #             print(f'Não foi possível identificar/cadastrar o produto')
+    #             print(f'Justificativa: {resultado_ia["justificativa"]}')
                 
                         
     #     pyautogui.press('down')
