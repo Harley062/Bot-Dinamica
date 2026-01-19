@@ -4,6 +4,11 @@ import os
 import cv2
 import numpy as np
 from PIL import ImageGrab
+import subprocess
+import shutil
+import webbrowser
+import pygetwindow as gw
+import platform, ctypes
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMAGES_DIR = os.path.join(BASE_DIR, "images")
@@ -16,7 +21,7 @@ def get_image_path(image_name):
     return os.path.join(IMAGES_DIR, image_name)
 
 
-def click_on_image(image_name, confidence=0.8, timeout=10, click_type='single', offset_x=0, offset_y=0):
+def click_on_image(image_name, confidence=0.8, timeout=10, click_type='single', offset_x=0, offset_y=0, continue_after_fail=False):
 
     image_path = get_image_path(image_name)
     
@@ -56,11 +61,19 @@ def click_on_image(image_name, confidence=0.8, timeout=10, click_type='single', 
         except pyautogui.ImageNotFoundException:
             pass
         except Exception as e:
-            raise Exception(f"⚠ Erro ao procurar imagem '{image_name}': {type(e).__name__}: {e}")
+            if continue_after_fail:
+                print(f"⚠ Erro ao procurar imagem '{image_name}': {type(e).__name__}: {e} (continuando)")
+                return False
+            else:
+                raise Exception(f"⚠ Erro ao procurar imagem '{image_name}': {type(e).__name__}: {e}")
         
         time.sleep(0.3)
     
-    raise Exception(f"✗ Imagem '{image_name}' não encontrada após {timeout}s ({attempts} tentativas)")
+    if continue_after_fail:
+        print(f"✗ Imagem '{image_name}' não encontrada após {timeout}s ({attempts} tentativas) (continuando)")
+        return False
+    else:
+        raise Exception(f"✗ Imagem '{image_name}' não encontrada após {timeout}s ({attempts} tentativas)")
 
 def houver_on_image(image_name, confidence=0.8, timeout=10):
 
@@ -102,15 +115,108 @@ def wait_and_click_image(image_name, confidence=0.8, timeout=30):
     return click_on_image(image_name, confidence, timeout, 'single')
 
 def init_chrome(url):
-    pyautogui.press('win')
-    time.sleep(1)
-    pyautogui.write('chrome')
-    time.sleep(1)
-    pyautogui.press('enter')
-    time.sleep(3)
-    pyautogui.write(url)
-    pyautogui.press('enter')
-    time.sleep(5)
+    """
+    Abre o Google Chrome em janela anônima (incognito) apontando para `url`
+    e tenta trazer a janela do Chrome ao topo/ativa na tela.
+    """
+
+    candidates = [
+        shutil.which("chrome"),
+        shutil.which("google-chrome"),
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+    ]
+
+    chrome_path = next((p for p in candidates if p and os.path.exists(p)), None)
+
+    # iniciar navegador
+    try:
+        if chrome_path:
+            subprocess.Popen([chrome_path, "--incognito", "--new-window", url],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        else:
+            # fallback: tentar abrir via webbrowser (pode não respeitar incognito)
+            webbrowser.open_new(url)
+    except Exception as e:
+        print(f"[WARN] Falha ao iniciar chrome diretamente: {e} - tentando fallback")
+        try:
+            webbrowser.open_new(url)
+        except Exception:
+            pass
+
+    # aguardar o processo/GUI aparecer
+    time.sleep(2)
+
+    # tentar trazer a janela do Chrome ao topo
+    gw_available = True
+    try:
+        # verificar se pygetwindow está disponível e funcional
+        gw.getAllTitles()
+    except Exception:
+        gw_available = False
+
+    brought_to_front = False
+    if gw_available and gw:
+        search_keys = ("Chrome", "Google Chrome", "Chromium")
+        end_time = time.time() + 10
+        while time.time() < end_time and not brought_to_front:
+            titles = gw.getAllTitles()
+            for t in titles:
+                if not t:
+                    continue
+                if any(k in t for k in search_keys):
+                    wins = gw.getWindowsWithTitle(t)
+                    for w in wins:
+                        try:
+                            if w.isMinimized:
+                                try:
+                                    w.restore()
+                                except Exception:
+                                    pass
+                            try:
+                                w.activate()
+                            except Exception:
+                                # fallback: maximize then activate
+                                try:
+                                    w.maximize()
+                                    w.activate()
+                                except Exception:
+                                    pass
+                            # on Windows try OS call to ensure foreground
+                            try:
+                                if platform.system() == "Windows" and hasattr(w, "_hWnd"):
+                                    ctypes.windll.user32.SetForegroundWindow(w._hWnd)
+                            except Exception:
+                                pass
+
+                            # small delay to let window come front
+                            time.sleep(0.3)
+                            brought_to_front = True
+                            break
+                        except Exception:
+                            continue
+                if brought_to_front:
+                    break
+            if not brought_to_front:
+                time.sleep(0.5)
+
+    if not brought_to_front:
+        # última tentativa simples: tenta usar alt+tab via pyautogui para focar
+        try:
+            pyautogui.keyDown('alt')
+            pyautogui.press('tab')
+            pyautogui.keyUp('alt')
+            time.sleep(0.3)
+            brought_to_front = True
+        except Exception:
+            pass
+
+    if brought_to_front:
+        return True
+
+    print("[WARN] Não foi possível garantir que o Chrome esteja em primeiro plano.")
+    return False
+
 
 
 def apagar_xml_downloads(target_dir: str = None):
@@ -146,13 +252,6 @@ def apagar_xml_downloads(target_dir: str = None):
 
     print(f"Removidos {len(removed)} arquivos .xml em {target_dir}")
     return removed
-import cv2
-import numpy as np
-import pyautogui
-from PIL import ImageGrab
-import time
-import os
-
 
 def click_on_all_images(image_name, target_color=None, color_tolerance=30, 
                         confidence=0.7, click_type='single', 

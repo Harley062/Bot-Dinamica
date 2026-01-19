@@ -29,7 +29,7 @@ def exportar_produtos_para_excel(nome_arquivo="produtos_api.xlsx", apenas_ativos
 
         if apenas_ativos and 'inativo' in df.columns:
             produtos_antes = len(df)
-            df = df[df['inativo'] == False]
+            df = df[(df['inativo'] == False) | (df['inativo'] == 0)]
             print(f"Filtrando apenas produtos ativos: {produtos_antes} -> {len(df)} produtos")
 
         df.to_excel(nome_arquivo, index=False, engine='openpyxl')

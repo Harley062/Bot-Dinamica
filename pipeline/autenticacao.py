@@ -78,6 +78,63 @@ class APIClient:
 
         raise Exception(f"Erro ao criar produto: {response.status_code} - {response.text}")
 
+    def get_grupos(self):
+        """Busca lista de grupos de produtos."""
+        headers = self._get_headers()
+        url = f"{self.base_url}/produto/Grupo"
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 401:
+            self.autenticar()
+            headers = self._get_headers()
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                return response.json()
+
+        raise Exception(f"Erro ao buscar grupos: {response.status_code} - {response.text}")
+
+    def get_unidades(self):
+        """Busca lista de unidades de produto."""
+        headers = self._get_headers()
+        url = f"{self.base_url}/produto/Unidade"
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 401:
+            self.autenticar()
+            headers = self._get_headers()
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                return response.json()
+
+        raise Exception(f"Erro ao buscar unidades: {response.status_code} - {response.text}")
+
+    def get_ncms(self, filtros=None):
+        """Busca lista de NCMs."""
+        headers = self._get_headers()
+        url = f"{self.base_url}/produto/Ncm"
+
+        if filtros:
+            url += "?" + "&".join([f"{k}={v}" for k, v in filtros.items()])
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 401:
+            self.autenticar()
+            headers = self._get_headers()
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                return response.json()
+
+        raise Exception(f"Erro ao buscar NCMs: {response.status_code} - {response.text}")
+
 
 if __name__ == "__main__":
     client = APIClient()
