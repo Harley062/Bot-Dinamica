@@ -15,8 +15,7 @@ from config import DOWNLOADS_PATH
 read_path = os.path.join(DOWNLOADS_PATH, 'gd_ItensXML.xls')
 xml_download_path = DOWNLOADS_PATH
 
-if os.path.exists(read_path):
-    os.remove(read_path)
+
 
 # Instância global do analisador (reutilizada para performance)
 _analisador_produto: Optional[AnalisadorProduto] = None
@@ -173,7 +172,9 @@ def exportar_xml():
     while True:
     
         apagar_xml_downloads()
-
+        if os.path.exists(read_path):
+            os.remove(read_path)
+            
         time.sleep(5)
         if primeiro_loop:
             click_on_image('exportar_xml/EpuPRI53T2.png', confidence=0.7, timeout=20)
@@ -418,9 +419,9 @@ def exportar_xml():
         time.sleep(2)
         
         click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=30, continue_after_fail=True)
-        
-        print('Função exportar_xml executada.')
-        
+        time.sleep(2)
+        click_on_image('exportar_xml/sim.png', confidence=0.7, timeout=30, continue_after_fail=True)
+        time.sleep(2)
         click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=10, continue_after_fail=True)
         
         time.sleep(10)
