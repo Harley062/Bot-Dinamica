@@ -29,7 +29,7 @@ if parent_dir not in sys.path:
 
 # Imports do projeto
 from pipeline.autenticacao import APIClient
-from pre_filtro_inteligente import MatcherHibrido, ProviderOpenAI, ProviderAnthropic
+from pipeline.pre_filtro_inteligente import MatcherHibrido, ProviderOpenAI, ProviderAnthropic
 import pandas as pd
 
 

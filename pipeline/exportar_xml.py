@@ -10,9 +10,10 @@ import glob
 
 # Import do analisador de produtos com IA
 from pipeline.analisador_produto import AnalisadorProduto, AcaoRequerida
+from config import DOWNLOADS_PATH
 
-read_path = r'C:\Users\harley.goncalves\Downloads\gd_ItensXML.xls'
-xml_download_path = r'C:\Users\harley.goncalves\Downloads'
+read_path = os.path.join(DOWNLOADS_PATH, 'gd_ItensXML.xls')
+xml_download_path = DOWNLOADS_PATH
 
 if os.path.exists(read_path):
     os.remove(read_path)

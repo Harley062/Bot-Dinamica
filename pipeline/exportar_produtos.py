@@ -9,8 +9,12 @@ sys.path.insert(0, current_dir)
 import autenticacao
 APIClient = autenticacao.APIClient
 
+from config import PRODUTOS_CACHE
 
-def exportar_produtos_para_excel(nome_arquivo="produtos_api.xlsx", apenas_ativos=True):
+
+def exportar_produtos_para_excel(nome_arquivo=None, apenas_ativos=True):
+    if nome_arquivo is None:
+        nome_arquivo = PRODUTOS_CACHE
     try:
         print("Iniciando exportação de produtos...")
 

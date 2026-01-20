@@ -16,3 +16,11 @@ PAGE_LOAD_DELAY = 5
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMAGES_DIR = os.path.join(BASE_DIR, "images")
 LOGS_DIR = os.path.join(BASE_DIR, "logs")
+
+# Paths de dados
+DATA_DIR = os.path.join(BASE_DIR, "data")
+CACHE_DIR = os.path.join(DATA_DIR, "cache")
+DOWNLOADS_PATH = os.path.join(os.path.expanduser("~"), "Downloads")
+
+# Arquivos de cache
+PRODUTOS_CACHE = os.path.join(CACHE_DIR, "produtos_api.xlsx")

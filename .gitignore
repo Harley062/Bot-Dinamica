@@ -22,3 +22,8 @@ screenshots/
 
 *.csv
 *.xlsx
+
+# Data and cache directories
+data/cache/*.xlsx
+data/cache/*.xls
+data/*.csv

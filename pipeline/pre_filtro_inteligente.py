@@ -18,6 +18,15 @@ from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 from fuzzywuzzy import fuzz
 from abc import ABC, abstractmethod
+import os
+import sys
+
+# Adiciona diretório pai ao path para imports
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+from config import PRODUTOS_CACHE
 
 
 # ============================================================================
@@ -540,7 +549,7 @@ def exemplo_uso():
     
     # Carrega produtos (exemplo)
     try:
-        df = pd.read_excel("produtos_api.xlsx")
+        df = pd.read_excel(PRODUTOS_CACHE)
         
         # Mapeia colunas (flexível para diferentes formatos)
         col_map = {
