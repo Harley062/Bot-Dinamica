@@ -114,7 +114,7 @@ def wait_and_click_image(image_name, confidence=0.8, timeout=30):
 
     return click_on_image(image_name, confidence, timeout, 'single')
 
-def init_chrome(url):
+def init_chrome(url, anonimo=True):
     """
     Abre o Google Chrome em janela anônima (incognito) apontando para `url`
     e tenta trazer a janela do Chrome ao topo/ativa na tela.
@@ -132,7 +132,10 @@ def init_chrome(url):
     # iniciar navegador
     try:
         if chrome_path:
-            subprocess.Popen([chrome_path, "--incognito", "--new-window", url],
+            args = [chrome_path, "--new-window", url]
+            if anonimo:
+                args.insert(1, "--incognito")
+            subprocess.Popen(args,
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         else:
             # fallback: tentar abrir via webbrowser (pode não respeitar incognito)

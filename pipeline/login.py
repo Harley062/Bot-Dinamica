@@ -4,7 +4,7 @@ import pyautogui
 
 def login(usuario, senha, usuario_mega="mega", senha_mega="a"):
     
-    init_chrome("https://dev.megaerp.online/")
+    init_chrome(url="https://dev.megaerp.online/", anonimo=False)
     time.sleep(5)
     click_on_image('login/login.png')
     pyautogui.press('tab')
@@ -14,7 +14,8 @@ def login(usuario, senha, usuario_mega="mega", senha_mega="a"):
     
     click_on_image('login/acessar.png', confidence=0.7, timeout=20)
     time.sleep(5)
-    click_on_image('login/nao_sou_robo.png', confidence=0.7, timeout=60)
+    click_on_image('login/nao_sou_robo.png', confidence=0.7, timeout=60, continue_after_fail=True)
+    time.sleep(5)
     click_on_image('login/conection.png', confidence=0.7, timeout=320, click_type='double')
     time.sleep(10)
     click_on_image('login/minimizar.png', confidence=0.7, timeout=30)
@@ -22,7 +23,7 @@ def login(usuario, senha, usuario_mega="mega", senha_mega="a"):
     click_on_image('login/abrir_mega.png', confidence=0.7, timeout=30, click_type='double')
     time.sleep(10)
     click_on_image('login/logo.png', confidence=0.7, timeout=30)
-    # pyautogui.press('tab')
+    pyautogui.press('tab')
     time.sleep(1)
     pyautogui.write(usuario_mega)
     time.sleep(1)
