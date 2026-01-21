@@ -1,4 +1,4 @@
-from tools import init_chrome, click_on_image
+from tools import init_chrome, click_on_image, houver_on_image
 import time 
 import pyautogui
 
@@ -6,8 +6,8 @@ def login(usuario, senha, usuario_mega="mega", senha_mega="a"):
     
     init_chrome(url="https://dev.megaerp.online/", anonimo=False)
     time.sleep(5)
-    click_on_image('login/login.png')
-    pyautogui.press('tab')
+    houver_on_image('login/login.png', confidence=0.7, timeout=60)
+    # pyautogui.press('tab')
     pyautogui.write(usuario)
     pyautogui.press('tab')
     pyautogui.write(senha)
