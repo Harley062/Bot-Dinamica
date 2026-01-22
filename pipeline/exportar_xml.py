@@ -87,6 +87,138 @@ def extrair_tipo_frete_xml() -> str:
         return 'CIF'
 
 
+def extrair_vencimentos_xml() -> list:
+    """
+    Extrai as datas de vencimento das duplicatas do XML da NF-e.
+
+    Retorna uma lista de dicionários contendo informações de cada duplicata:
+    - numero: Número da duplicata
+    - vencimento: Data de vencimento (formato YYYY-MM-DD)
+    - valor: Valor da duplicata
+
+    Returns:
+        list: Lista de dicionários com dados das duplicatas
+    """
+    try:
+        xml_files = glob.glob(os.path.join(xml_download_path, '*.xml'))
+
+        if not xml_files:
+            print("Nenhum arquivo XML encontrado para extrair vencimentos.")
+            return []
+
+        xml_mais_recente = max(xml_files, key=os.path.getctime)
+        print(f"Lendo XML para vencimentos: {os.path.basename(xml_mais_recente)}")
+
+        tree = ET.parse(xml_mais_recente)
+        root = tree.getroot()
+
+        ns = {'nfe': 'http://www.portalfiscal.inf.br/nfe'}
+
+        duplicatas = root.findall('.//nfe:cobr/nfe:dup', ns)
+
+        if not duplicatas:
+            duplicatas = root.findall('.//cobr/dup')
+
+        vencimentos = []
+        for dup in duplicatas:
+            # Tenta com namespace primeiro
+            n_dup = dup.find('nfe:nDup', ns)
+            d_venc = dup.find('nfe:dVenc', ns)
+            v_dup = dup.find('nfe:vDup', ns)
+
+            # Se não encontrar, tenta sem namespace
+            if n_dup is None:
+                n_dup = dup.find('nDup')
+            if d_venc is None:
+                d_venc = dup.find('dVenc')
+            if v_dup is None:
+                v_dup = dup.find('vDup')
+
+            vencimento_info = {
+                'numero': n_dup.text.strip() if n_dup is not None else None,
+                'vencimento': d_venc.text.strip() if d_venc is not None else None,
+                'valor': float(v_dup.text.strip()) if v_dup is not None else None
+            }
+            vencimentos.append(vencimento_info)
+
+        print(f"Vencimentos encontrados: {len(vencimentos)}")
+        for v in vencimentos:
+            print(f"  Parcela {v['numero']}: {v['vencimento']} - R$ {v['valor']:.2f}" if v['valor'] else f"  Parcela {v['numero']}: {v['vencimento']}")
+
+        return vencimentos
+
+    except Exception as e:
+        print(f"Erro ao extrair vencimentos do XML: {e}")
+        return []
+
+
+def extrair_parcelas_xml() -> str:
+    """
+    Extrai a quantidade de parcelas do XML da NF-e e retorna o código de condição de pagamento.
+
+    A quantidade de parcelas é determinada pelo número de elementos <dup> (duplicatas)
+    dentro do elemento <cobr> (cobrança) do XML.
+
+    Mapeamento:
+    - 1 parcela = '30D'
+    - 2 parcelas = '30/60'
+    - 3 parcelas = '30/60/90'
+    - 4 parcelas = '30/60/90/120'
+    - etc.
+
+    Returns:
+        str: Código da condição de pagamento
+    """
+    try:
+        # Busca o arquivo XML mais recente na pasta de downloads
+        xml_files = glob.glob(os.path.join(xml_download_path, '*.xml'))
+
+        if not xml_files:
+            print("Nenhum arquivo XML encontrado. Usando 30D como padrão.")
+            return '30D'
+
+        # Pega o arquivo XML mais recente
+        xml_mais_recente = max(xml_files, key=os.path.getctime)
+        print(f"Lendo XML para parcelas: {os.path.basename(xml_mais_recente)}")
+
+        # Parse do XML
+        tree = ET.parse(xml_mais_recente)
+        root = tree.getroot()
+
+        # Namespace da NF-e
+        ns = {'nfe': 'http://www.portalfiscal.inf.br/nfe'}
+
+        # Busca todos os elementos <dup> (duplicatas) dentro de <cobr>
+        duplicatas = root.findall('.//nfe:cobr/nfe:dup', ns)
+
+        if not duplicatas:
+            # Tenta sem namespace
+            duplicatas = root.findall('.//cobr/dup')
+
+        quantidade_parcelas = len(duplicatas)
+        print(f"Quantidade de parcelas encontradas: {quantidade_parcelas}")
+
+        if quantidade_parcelas == 0:
+            print("Nenhuma duplicata encontrada. Usando 30D como padrão.")
+            return '30D'
+
+        # Monta o código de condição de pagamento
+        if quantidade_parcelas == 1:
+            condicao = '30D'
+        else:
+            # Gera sequência: 30/60/90/120...
+            dias = [str(30 * i) for i in range(1, quantidade_parcelas + 1)]
+            condicao = '/'.join(dias)
+
+        print(f"Condição de pagamento: {condicao}")
+        return condicao
+
+    except Exception as e:
+        print(f"Erro ao extrair parcelas do XML: {e}")
+        print("Usando 30D como padrão.")
+        return '30D'
+
+
 def get_analisador() -> AnalisadorProduto:
     """Obtém instância do analisador de produtos (singleton)."""
     global _analisador_produto
@@ -211,7 +343,6 @@ def exportar_xml():
         
             time.sleep(2)
         
-            # pyautogui.write('01012025')
             pyautogui.write((datetime.now() - timedelta(days=365)).strftime('%d%m%Y'))
 
             time.sleep(2)
@@ -235,6 +366,30 @@ def exportar_xml():
         
             time.sleep(10)
             
+            click_on_image('exportar_xml/status_aberto.png', confidence=0.7, timeout=20)
+            
+            pyautogui.press('right', presses=30, interval=0.2)
+            
+            time.sleep(2)
+            
+            houver_on_image('exportar_xml/data_venc.png', confidence=0.7, timeout=20)
+            
+            time.sleep(2)
+            
+            click_on_image('exportar_xml/filtro.png', confidence=0.7, timeout=20)
+            
+            time.sleep(2)
+            
+            click_on_image('exportar_xml/nao_vazio.png', confidence=0.7, timeout=20)
+            
+            time.sleep(2)
+            
+            click_on_image('exportar_xml/data_venc.png', confidence=0.7, timeout=20)
+            
+            time.sleep(2)
+            
+            pyautogui.press('left', presses=30, interval=0.2)
+    
             primeiro_loop = False
         
         click_on_image('exportar_xml/status_aberto.png', click_type='double', confidence=0.7, timeout=20)
@@ -304,8 +459,10 @@ def exportar_xml():
         pyautogui.write(tipo_frete)
 
         pyautogui.press('tab')
-        
-        pyautogui.write('06 DIAS')
+
+        condicao_pagamento = extrair_parcelas_xml()
+        pyautogui.write(condicao_pagamento)
+
         
         time.sleep(2)
         
@@ -454,7 +611,7 @@ def exportar_xml():
         click_on_image('exportar_xml/almoxarifado.png', confidence=0.7, timeout=30)
         time.sleep(2)
         
-        pyautogui.write('29')
+        pyautogui.write('1')
         
         time.sleep(2)
         
@@ -491,3 +648,12 @@ def exportar_xml():
         click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=30)
         
         time.sleep(20)
+
+        vencimentos = extrair_vencimentos_xml()
+
+        if vencimentos:
+            print("Datas de vencimento extraídas do XML:")
+            for v in vencimentos:
+                print(f"  Parcela {v['numero']}: Vencimento {v['vencimento']} - Valor R$ {v['valor']:.2f}" if v['valor'] else f"  Parcela {v['numero']}: Vencimento {v['vencimento']}")
+
+        return vencimentos

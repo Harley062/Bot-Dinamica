@@ -12,9 +12,9 @@ def main():
         logger.info("Iniciando o processo de automação...")
 
         logger.info("Exportando produtos da API...")
-        exportar_produtos_para_excel()
+        # exportar_produtos_para_excel()
 
-        login(USUARIO, SENHA)
+        # login(USUARIO, SENHA)
     
         exportar_xml()
         logger.info("Processo de automação concluído com sucesso.")
