@@ -599,53 +599,51 @@ def exportar_xml():
         pyautogui.press('tab')
         time.sleep(2)
         
-        click_on_image('exportar_xml/editar_item.png', confidence=0.7, timeout=30)
-        time.sleep(2)
+        # click_on_image('exportar_xml/editar_item.png', confidence=0.7, timeout=30)
+        # time.sleep(2)
         
-        click_on_image('exportar_xml/editar.png', confidence=0.7, timeout=30)
+        # click_on_image('exportar_xml/editar.png', confidence=0.7, timeout=30)
         
-        time.sleep(2)
+        # time.sleep(2)
         
-        click_on_image('exportar_xml/estoque.png', confidence=0.7, timeout=30)
+        # click_on_image('exportar_xml/estoque.png', confidence=0.7, timeout=30)
         
-        time.sleep(2)
+        # time.sleep(2)
         
-        click_on_image('exportar_xml/almoxarifado.png', confidence=0.7, timeout=30)
-        time.sleep(2)
+        # click_on_image('exportar_xml/almoxarifado.png', confidence=0.7, timeout=30)
+        # time.sleep(2)
         
-        pyautogui.write('1')
+        # pyautogui.write('1')
         
-        time.sleep(2)
+        # time.sleep(2)
         
-        pyautogui.press('tab')
+        # pyautogui.press('tab')
         
-        time.sleep(2)
+        # time.sleep(2)
         
-        pyautogui.write('1')
+        # pyautogui.write('1')
         
-        time.sleep(2)
+        # time.sleep(2)
         
-        pyautogui.press('tab')
+        # pyautogui.press('tab')
         
-        time.sleep(2)
+        # time.sleep(2)
         
-        pyautogui.write('DP')
+        # pyautogui.write('DP')
         
-        time.sleep(2)
+        # time.sleep(2)
         
-        pyautogui.press('tab')
+        # pyautogui.press('tab')
         
-        time.sleep(2)
+        # time.sleep(2)
         
-        pyautogui.press('enter')
+        # pyautogui.press('enter')
         
-        click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=30)
+        # click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=30)
         
-        time.sleep(2)
+        # time.sleep(2)
         
-        click_on_image('exportar_xml/ok2.png', confidence=0.7, timeout=30)
-        
-        time.sleep(5)
+        # click_on_image('exportar_xml/ok2.png', confidence=0.7, timeout=30)
         
         click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=30)
         
@@ -657,10 +655,15 @@ def exportar_xml():
             click_on_image('exportar_xml/parcelas.png', confidence=0.7, timeout=30)
             time.sleep(2)
             pyautogui.press('tab')
-            time.sleep(2)
-            pyautogui.write(v['vencimento'].strftime('%d%m%Y'))
+            time.sleep(2)     
+            vencimento_dt = datetime.strptime(v['vencimento'], '%Y-%m-%d')
+            pyautogui.write(vencimento_dt.strftime('%d%m%Y'))
             time.sleep(2)
             pyautogui.press('tab')
             time.sleep(2)
-            pyautogui.write(v['vencimento'].strftime('%d%m%Y'))
-            
+            pyautogui.write(vencimento_dt.strftime('%d%m%Y'))
+            click_on_all_images('exportar_xml/down.png', confidence=0.7, timeout=30)
+        
+        click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=30)
+        time.sleep(5)
+        
