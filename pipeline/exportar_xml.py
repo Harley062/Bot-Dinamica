@@ -588,10 +588,12 @@ def exportar_xml():
         time.sleep(2)
         
         pyautogui.write('AP')
-        pyautogui.press('tab', presses=3, interval=0.5)
+        
+        pyautogui.press('tab', presses=4, interval=1)
+        
         time.sleep(2)
         
-        pyautogui.write('92')
+        pyautogui.write('2')
         time.sleep(2)
         
         pyautogui.press('tab')
@@ -650,10 +652,15 @@ def exportar_xml():
         time.sleep(20)
 
         vencimentos = extrair_vencimentos_xml()
-
-        if vencimentos:
-            print("Datas de vencimento extraídas do XML:")
-            for v in vencimentos:
-                print(f"  Parcela {v['numero']}: Vencimento {v['vencimento']} - Valor R$ {v['valor']:.2f}" if v['valor'] else f"  Parcela {v['numero']}: Vencimento {v['vencimento']}")
-
-        return vencimentos
+        for v in vencimentos:
+            print(f"Parcela {v['numero']}: Vencimento {v['vencimento']} - Valor R$ {v['valor']:.2f}" if v['valor'] else f"Parcela {v['numero']}: Vencimento {v['vencimento']}")
+            click_on_image('exportar_xml/parcelas.png', confidence=0.7, timeout=30)
+            time.sleep(2)
+            pyautogui.press('tab')
+            time.sleep(2)
+            pyautogui.write(v['vencimento'].strftime('%d%m%Y'))
+            time.sleep(2)
+            pyautogui.press('tab')
+            time.sleep(2)
+            pyautogui.write(v['vencimento'].strftime('%d%m%Y'))
+            
