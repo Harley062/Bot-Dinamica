@@ -663,7 +663,11 @@ def exportar_xml():
             time.sleep(2)
             pyautogui.write(vencimento_dt.strftime('%d%m%Y'))
             click_on_all_images('exportar_xml/down.png', confidence=0.7, timeout=30)
+            click_on_image('exportar_xml/KgFh1LwTzB.png', confidence=0.7, timeout=30, continue_after_fail=True)
+            time.sleep(2)
+            click_on_image('exportar_xml/KgFh1LwTzB.png', confidence=0.7, timeout=30, continue_after_fail=True)
         
         click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=30)
         time.sleep(5)
+        
         
