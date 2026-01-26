@@ -13,9 +13,9 @@ def main():
 
         logger.info("Exportando produtos da API...")
         exportar_produtos_para_excel()
-
+        logger.info("Iniciando o login...")
         login(USUARIO, SENHA)
-    
+        logger.info("Iniciando recebimento de notas fiscais...")
         exportar_xml()
         logger.info("Processo de automação concluído com sucesso.")
     except Exception as e:
