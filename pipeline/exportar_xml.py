@@ -598,53 +598,7 @@ def exportar_xml():
         
         pyautogui.press('tab')
         time.sleep(2)
-        
-        # click_on_image('exportar_xml/editar_item.png', confidence=0.7, timeout=30)
-        # time.sleep(2)
-        
-        # click_on_image('exportar_xml/editar.png', confidence=0.7, timeout=30)
-        
-        # time.sleep(2)
-        
-        # click_on_image('exportar_xml/estoque.png', confidence=0.7, timeout=30)
-        
-        # time.sleep(2)
-        
-        # click_on_image('exportar_xml/almoxarifado.png', confidence=0.7, timeout=30)
-        # time.sleep(2)
-        
-        # pyautogui.write('1')
-        
-        # time.sleep(2)
-        
-        # pyautogui.press('tab')
-        
-        # time.sleep(2)
-        
-        # pyautogui.write('1')
-        
-        # time.sleep(2)
-        
-        # pyautogui.press('tab')
-        
-        # time.sleep(2)
-        
-        # pyautogui.write('DP')
-        
-        # time.sleep(2)
-        
-        # pyautogui.press('tab')
-        
-        # time.sleep(2)
-        
-        # pyautogui.press('enter')
-        
-        # click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=30)
-        
-        # time.sleep(2)
-        
-        # click_on_image('exportar_xml/ok2.png', confidence=0.7, timeout=30)
-        
+    
         click_on_image('exportar_xml/confirmar.png', confidence=0.7, timeout=30)
         
         time.sleep(20)
