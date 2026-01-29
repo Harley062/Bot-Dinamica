@@ -114,6 +114,29 @@ def wait_and_click_image(image_name, confidence=0.8, timeout=30):
 
     return click_on_image(image_name, confidence, timeout, 'single')
 
+def close_chrome():
+    """
+    Fecha todas as instâncias do Google Chrome em execução.
+    """
+    try:
+        if platform.system() == "Windows":
+            subprocess.run(
+                ["taskkill", "/F", "/IM", "chrome.exe"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        else:
+            subprocess.run(
+                ["pkill", "-f", "chrome"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        print("[INFO] Chrome fechado com sucesso.")
+    except Exception as e:
+        print(f"[WARN] Falha ao fechar Chrome: {e}")
+    time.sleep(2)
+
+
 def init_chrome(url, anonimo=True):
     """
     Abre o Google Chrome em janela anônima (incognito) apontando para `url`
@@ -135,8 +158,15 @@ def init_chrome(url, anonimo=True):
             args = [chrome_path, "--new-window", url]
             if anonimo:
                 args.insert(1, "--incognito")
+            creation_flags = 0
+            if platform.system() == "Windows":
+                creation_flags = (
+                    subprocess.DETACHED_PROCESS
+                    | subprocess.CREATE_NEW_PROCESS_GROUP
+                )
             subprocess.Popen(args,
-                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                             creationflags=creation_flags)
         else:
             # fallback: tentar abrir via webbrowser (pode não respeitar incognito)
             webbrowser.open_new(url)

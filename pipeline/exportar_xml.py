@@ -616,7 +616,10 @@ def exportar_xml():
             pyautogui.press('tab')
             time.sleep(2)
             pyautogui.write(vencimento_dt.strftime('%d%m%Y'))
-            click_on_all_images('exportar_xml/down.png', confidence=0.7)
+            
+            if int(v.index) == len(vencimentos):    
+                click_on_all_images('exportar_xml/down.png', confidence=0.7)
+            
             click_on_image('exportar_xml/KgFh1LwTzB.png', confidence=0.7, timeout=30, continue_after_fail=True)
             time.sleep(2)
             click_on_image('exportar_xml/KgFh1LwTzB.png', confidence=0.7, timeout=30, continue_after_fail=True)
